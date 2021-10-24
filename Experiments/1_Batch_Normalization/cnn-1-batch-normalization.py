@@ -2,7 +2,7 @@ from __future__ import division
 import keras
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, MaxPool2D , Flatten, Dropoutfrom, BatchNormalization
+from keras.layers import Dense, Conv2D, MaxPool2D , Flatten, Dropout, BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 from keras.optimizers import Adam
@@ -56,7 +56,7 @@ class PlotLearning(keras.callbacks.Callback):
             axs[i].grid()
 
         plt.tight_layout()
-        plt.show()
+        plt.savefig('./output/metrics.pdf')
 
 ####################################################
 
@@ -70,10 +70,10 @@ img_rows, img_cols, channels = 256, 256, 3
 input_shape = (img_rows, img_cols, channels)
 
 gendata_train = ImageDataGenerator(rescale=1./255)
-traindata = gendata_train.flow_from_directory(directory="Data/Train", target_size=(img_rows, img_cols), batch_size=batch_size, shuffle=True, color_mode='rgb')
+traindata = gendata_train.flow_from_directory(directory="../Data/Train", target_size=(img_rows, img_cols), batch_size=batch_size, shuffle=True, color_mode='rgb')
 
 gendata_valid = ImageDataGenerator(rescale=1./255)
-validdata = gendata_valid.flow_from_directory(directory="Data/Valid", target_size=(img_rows, img_cols), batch_size=batch_size, shuffle=False, color_mode='rgb')
+validdata = gendata_valid.flow_from_directory(directory="../Data/Valid", target_size=(img_rows, img_cols), batch_size=batch_size, shuffle=False, color_mode='rgb')
 
 print(traindata.class_indices)
 print(validdata.class_indices)
@@ -120,12 +120,12 @@ model.add(Dense(units=29, activation="sigmoid"))
 opt = Adam(learning_rate=0.000001)
 model.compile(optimizer=opt, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
 
-model.load_weights('vgg16_0015_0.4187.h5')
+#model.load_weights('vgg16_0015_0.4187.h5')
 
 #Defining our callbacks
 checkpoint = ModelCheckpoint('vgg16_{epoch:04d}_{val_accuracy:.4f}.h5', monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='auto')
 early = EarlyStopping(monitor='val_accuracy', min_delta=0, patience=5, verbose=1, mode='auto')
-callbacks_list = [checkpoint, early, PlotLearning]
+callbacks_list = [checkpoint, early, PlotLearning()]
 ###
 
 #Start fitting the model
@@ -135,7 +135,7 @@ history = model.fit(
     validation_data=validdata,
     validation_steps=validdata.samples // batch_size,
     epochs=50,
-    callbacks=[checkpoint, early])
+    callbacks=callbacks_list)
 ####
 
 #Evaluate the model with test set
