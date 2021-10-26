@@ -29,3 +29,35 @@ This time we set the number of epochs to 50.
 We started training from last saved weights during experiment 0.
 
 At the end of trainig both (accuracy and loss) plots can indicate to overfitting. 
+
+
+### 1_Batch_Normalization:
+Add Batch Norm after each of the conv layers
+
+Lot of overfitting 
+
+The model stops after 33 epochs because valid acc is decreasing (Early stopping patiente 5)
+
+Our best model achieves 64%
+
+Decision: Try another kind of extra regularization ---> L2 reg
+
+
+### 1_Batch_Norm_L2:
+
+
+Our best model achieves 67.22%
+
+The model stills overfit too much after aprox 33 epochs but gets better accuracy (Early stopping patiente 5)
+
+L2 to 128 up conv layers and 256 Dense layers
+
+Decision: Add strong reg --> Dropout (We will try with 20% and 10%)
+
+
+### 1_Batch_Norm_L2_Dropout_20:
+
+Dropout to 258 up
+
+
+
